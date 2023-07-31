@@ -1,0 +1,553 @@
+---
+title: "BellaBeat Case Study"
+author: "Shefalika Thapa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Google Data Analytics Case study- BellaBeat
+
+Welcome to the Bellabeat data analysis case study! In this case study,
+you will perform many real-world tasks of a junior data analyst. You
+will imagine you are working for Bellabeat, a high-tech manufacturer of
+health-focused products for women, and meet different characters and
+team members. In order to answer the key business questions, you will
+follow the steps of the data analysis process: **ask, prepare, process,
+analyze, share, and act**. Along the way, the Case Study Roadmap tables
+--- including guiding questions and key tasks --- will help you stay on
+the right path.
+
+
+### Scenario
+
+You are a junior data analyst working on the marketing analyst team at
+Bellabeat, a high-tech manufacturer of health-focused products for
+women. Bellabeat is a successful small company, but they have the
+potential to become a larger player in the global smart device market.
+Urška Sršen, co-founder and Chief Creative Officer of Bellabeat, believes
+that analyzing smart device fitness data could help unlock new growth
+opportunities for the company. You have been asked to focus on one of
+Bellabeat's products and analyze smart device data to gain insight into
+how consumers are using their smart devices. The insights you discover
+will then help guide marketing strategy for the company. You will
+present your analysis to the Bellabeat executive team along with your
+high-level recommendations for Bellabeat's marketing strategy.
+
+### Character and Products
+
+
+#### Characters
+
+-   **Urška Sršen** : Bellabeat's co-founder and Chief Creative Officer
+-   **Sando Mur** : Mathematician and Bellabeat's co-founder; key member
+    of the Bellabeat executive team
+-   **Bellabeat marketing analytics team** : A team of data analysts
+    responsible for collecting, analyzing, and reporting data that helps
+    guide Bellabeat's marketing strategy. You joined this team six
+    months ago and have been busy learning about Bellabeat's mission
+    and business goals --- as well as how you, as a junior data analyst,
+    can help Bellabeat achieve them.
+    
+#### Products
+
+-   **Bellabeat app**: The Bellabeat app provides users with health data
+    related to their activity, sleep, stress, menstrual cycle, and
+    mindfulness habits. This data can help users better understand their
+    current habits and make healthy decisions. The Bellabeat app
+    connects to their line of smart wellness products.
+-   **Leaf**: Bellabeat's classic wellness tracker can be worn as a
+    bracelet, necklace, or clip. The Leaf tracker connects to the
+    Bellabeat app to track activity, sleep, and stress.
+-   **Time**: This wellness watch combines the timeless look of a
+    classic timepiece with smart technology to track user activity,
+    sleep, and stress. The Time watch connects to the Bellabeat app to
+    provide you with insights into your daily wellness.
+-   **Spring**: This is a water bottle that tracks daily water intake
+    using smart technology to ensure that you are appropriately hydrated
+    throughout the day. The Spring bottle connects to the Bellabeat app
+    to track your hydration levels.
+-   **Bellabeat membership**: Bellabeat also offers a subscription-based membership 
+    program for users.Membership gives users 24/7 access to fully personalized guidance on      nutrition, activity, sleep, health and beauty, and mindfulness based on their lifestyle     and goals.
+    
+    
+    
+### Deliverables
+
+1. A clear summary of the business task
+2. A description of all data sources used
+3. Documentation of any cleaning or manipulation of data
+4. A summary of your analysis
+5. Supporting visualizations and key findings
+6. Your top high-level content recommendations based on your analysis
+
+
+### **ASK PHASE**
+
+### Business Task
+
+The objective of the business task is to analyse non-Bellabeat smart device usage data in order to gain knowledge of relevant (successful and unsuccessful) consumer trends in the global market for smart devices. 
+
+This analysis will also help to determine how to apply these trends to Bellabeat customers and to influence future Bellabeat marketing strategies. In order to maximise revenues and growth for the business and to capitalise on Bellabeat's quickly expanding consumer base in the smart device/tech-wellness area, such insights are applied to the Bellabeat App and to future products. 
+
+### Key Stakeholders
+
+The major stakeholders that need to be taken into account in the data analysis and decisions are Urka Sren, Sando Mur (the other co-founder of Bellabeat and a significant part of the Bellabeat executive team), the Bellabeat executive team, the Bellabeat Marketing Analytics Team, and the Bellabeat investors.
+    
+
+### *** PREPARE PHASE***
+
+FitBit Fitness Tracker Data (CC0: Public Domain, dataset made accessible through Mobius) is the open source data set utilised in the project. Thirty Fitbit customers' personal fitness trackers are included in this Kaggle data collection. Thirty eligible Fitbit users agreed to submit their personal tracker data, which included minute-level output for heart rate, sleep, and physical activity monitoring. It contains data on daily activity, steps, and heart rate that may be examined to learn more about users' routines.
+
+### About the data
+
+The FitBit Fitness Tracker Data Set offered a total of 18 data sets. They are each kept separately in the form of.csv files. The daily activity data set ('activity_daily'), which combines data from other provided files like daily intensities and daily steps, the weight data set ('weight'), the daily sleep data set ('sleep_daily'), and the daily calories data set ('daily_calories'), will instead be the focus of this analysis. These files contain pertinent information that is also recorded by Bellabeat products, which will give me the most pertinent and helpful insights to address the current business challenge.
+
+### Data Source
+The data set can be found on Kaggle. It is an open source data. https://www.kaggle.com/datasets/arashnic/fitbit 
+
+
+### Issues with the data
+
+ROCCC methodology will be used to determine the credibility of the data.
+
+-**Reliable:** NOT reliable. This data is biased because it only includes 30 carefully chosen people, not the 30+ million Fitbit users as a whole. This would result in an unfavourable 95%/90% confidence level and an 18%/15% margin of error, respectively. For a sample size to provide a high level of confidence (95%) and a narrow margin of error (5%), it should be at least 10 times the existing quantity. However, the Central Limit Theorem (CLT) states that a sample size of 30 is the least sample size for which the CLT is still applicable. The fact that the presented data at least meet this measure is thus positive. Additionally, the data was only collected over the period of two months, which is inadequate to draw definitive findings on patterns. The ideal amount of data to identify significant trends and insights is at least one year's worth of data.
+
+-**Original:** NOT original. Respondents to a dispersed survey produced the data set. If Fitbit had provided the information directly, that would have been preferable.
+
+-**Comprehensive:** NOT comprehensive. The data is incomplete in the sense that further information (which is missing) would be necessary to produce a more accurate analysis (such as sex, age, height, etc.). Additionally, more information from more sources would increase the comprehensiveness overall; for instance, a more correct sample bias of the 30+ million Fitbit users. Again, only two months' worth of data were gathered, so it's not all-inclusive. Furthermore, it is impossible to determine whether there was bias in the selection of the individuals or if they were chosen at random. What criteria were used to choose the 30 people? More information about the data would be beneficial.
+
+-**Current**:  NOT current. It is not a current data set that reflects current trends because the data was collected six years ago.
+
+-**Cited**: Cited,but NOT credible. The information originated from Amazon Mechanical Turk, therefore it might or might not be a trustworthy source. The honesty and reliability of Amazon Mechanical Turk require further study.
+
+### Other issues
+
+-Since this information was gathered in 2016, any changes brought on by the COVID-19 pandemic were not taken into account.
+
+-Although Bellabeat targets women with their products, both men and women participated in the poll.
+
+-Since no information about their age, gender, or height is given, we can only infer that they are of a similar height.
+
+### **PROCESS PHASE**
+
+To clean the dataset, Microsoft Excel(Spreadsheet) is used.
+
+### Cleanup Log
+
+Checklist followed for cleaning the dataset:
+
+1. Check Datatypes
+
+2. Check for null values/missing values
+
+3. Check for duplicate values
+
+4. Check for inconsistent naming convention
+
+5. Check for missing data
+
+6. Remove irrelevant data
+
+7. Filter outliers
+
+8. Values that are negative or positive
+
+9. Values that are larger or smaller than a cutoff value
+
+10. Values that occur in a certain date range
+
+11. Errors in the data or in calculations that drive values in the data
+
+
+
+#### **dailyActivity Dataset**
+
+1. Converted the datatype of nvarchar of ActivityDate col to date
+
+2. Numbers rounded off to two decimal places
+
+3. Trimmed white spaces
+
+4. Checked for duplicates
+
+5. Converted minutes to hrs and added new columns
+
+
+
+#### **weightLogInfo**
+
+1. Changed to correct date format
+
+2. Split Date-Time to Date and Time columns
+
+3. Removed weight column (because there were only 2 entries)
+
+4. Rounded off to two decimal places(BMI)
+
+
+
+#### **dailyCalories**
+
+1. Changed to correct date format
+
+
+
+#### **dailySteps**
+
+1. Changed to correct date format format
+
+2. Checked for duplicates
+
+
+
+#### **sleepDay**
+
+1. Split Date-Time to separate Date and Time columns
+
+2. Converted minutes to hrs and added new columns
+
+
+### **ANALYZE AND SHARE PHASE**
+
+
+Loading the necessary packages
+
+
+```{Installing and loading the necessary packages}
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("ggplot2")
+install.packages("readr")
+install.packages("tydyr")
+install.packages("dplyr")
+install.packages("skimr")
+install.packages("janitor")
+install.packages("skimr")
+install.packages("scales")
+
+
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(skimr)
+library(janitor)
+library(scales)
+
+```
+```{Reading the CSV files into dataframes}
+
+daily_activity<-read_csv("dailyActivityClean1.csv")
+daily_calories<-read_csv("dailyCalories.csv")
+daily_steps<-read_csv("dailySleep.csv")
+daily_sleep<-read_csv("dailySteps.csv")
+weight_data<-read_csv("weightLogInfoClean.csv")
+```
+
+```{Checking the dataset information}
+
+head(daily_activity)
+
+colnames(daily_activity)
+
+head(daily_calories)
+
+colnames(daily_calories)
+
+head(daily_sleep)
+
+colnames(daily_sleep)
+
+head(daily_steps)
+
+colnames(daily_steps)
+
+head(weight_data)
+
+colnames(weight_data)
+
+```
+```{Additional Cleanup steps}
+# Extracting only unique values into a a new dataframe
+
+daily_sleep_clean <- unique(daily_sleep) 
+
+head(daily_sleep_clean)
+
+nrow(unique(daily_activity))
+
+
+
+daily_activity_clean<-unique(daily_activity)
+
+nrow(daily_activity_clean)
+
+daily_calories_clean<-unique(daily_calories)
+
+daily_steps_clean<-unique(daily_steps)
+
+weight_data_clean<-unique(weight_data)
+
+# Filtering out the rows which have 0 as TotalSteps
+daily_activity_cleanNew<-daily_activity_clean%>% filter(TotalSteps!=0)
+```
+```{Summary of the cleaned datasets}
+
+skim_without_charts(daily_activity_cleanNew)
+
+skim_without_charts(daily_calories_clean)
+
+# Average Total Steps - 8319
+
+average_total_steps<-mean(daily_activity_cleanNew$TotalSteps) 
+
+# 5.98 km
+average_total_distance<-mean(daily_activity_cleanNew$TotalDistance)
+
+# 1.64 km
+average_very_active_distance<-mean(daily_activity_cleanNew$VeryActiveDistance)
+
+# 0.618 km
+average_moderately_active_distance<-mean(daily_activity_cleanNew$ModeratelyActiveDistance)
+
+# 3.64 km
+average_light_active_distance<-mean(daily_activity_cleanNew$LightActiveDistance) 
+
+# 0.384 hrs
+average_very_active_hours<-mean(daily_activity_cleanNew$VeryActiveHours)
+
+# 0.246 hrs
+average_fairly_active_hours<-mean(daily_activity_cleanNew$FairlyActiveHours)
+
+# 3.5 hrs
+average_lightly_active_hours<-mean(daily_activity_cleanNew$LightlyActiveHours)
+
+# 15.9 hrs
+average_sedentary_hours<-mean(daily_activity_cleanNew$SedentaryHours)
+
+# 2361
+average_calories<-mean(daily_activity_cleanNew$Calories)
+
+# 6.99
+average_sleep<-mean(daily_sleep_clean$TotalHoursAsleep)
+
+# 7.64
+average_timeinbed<-mean(daily_sleep_clean$TotalHoursInBed)
+
+# 25.2   
+average_BMI<-mean(weight_data_clean$BMI)
+
+
+
+summary(daily_activity_cleanNew)
+
+summary(daily_calories_clean)
+
+summary(daily_sleep_clean)
+
+summary(weight_data_clean)
+```
+## TRENDS 
+
+1. Following analysis, it was discovered that an individual takes, on average, 8319 steps each day. This is less than the CDC-recommended 10,000 steps per day.
+
+2. Average distance walked by an individual is 5.98 km which is less than the recommended distance of 8 km.
+
+3. The users get 23.04 minutes of vigorous movement each day, or 161.28 minutes per week, which is fantastic because the CDC suggests doing at least 75 minutes of vigorous activity every day. 
+
+4. When calculating the average daily caloric expenditure, the participants burned off 2361 calories on a daily basis. The CDC advises burning at least 2500 calories daily for women and men. We don't know if most men reached their target calorie burn because the participants' genders aren't stated, but women would have succeeded if they burnt at least 2000 calories.
+
+5. Average sedentary hours is 15.9 hrs which comes under the high risk category.
+
+6. The users slept for an average of seven hours. This is excellent news because "7 or more hours of sleep per night" is advised for adults' health.
+
+7. Users spend 7.64 hours per night in bed, which suggests that it takes them around 64 minutes, or 1 hour and 4 minutes, to fall asleep. Health Central advises against being awake in bed for longer than one hour. By doing this, the mental association between being awake and being in bed is prevented, which may help with insomnia. 
+
+8. The users have a 25.2 BMI on average. Sadly, this is within the unhealthy weight range of 25.0 to 29.9. This suggests that in order to be healthy, users should drop a little weight. According to the CDC, a BMI of 18.5 to 24.9 is considered to be within the normal or healthy weight range.
+
+
+## Including Plots
+
+
+```{r}
+# Percentage of Activity in Hours - Pie Chart
+
+slices<-c(average_very_active_hours,average_fairly_active_hours,average_lightly_active_hours,average_sedentary_hours)
+lb<-c("Very Active","Fairly Active","Lightly Active","Sedentary")
+percent <- round(slices/sum(slices)*100)
+lb <- paste(lb, percent)
+lb <- paste(lb, "%", sep="")
+pie(slices, labels = lb, col = rainbow(length(lb)), main = "Percentage of Activity in Hours")
+```
+Since 79% of the average user's activity time over a month was spent sitting down, it is evident that the people are not being active enough when the Daily Activity Levels in hours are displayed as percentages. This is bad news for a fitness tracking app, especially when the percentages of time spent being very active and moderately active are only 2% and 1%, respectively, of the overall time.
+
+
+
+```{r}
+# Total Steps vs Calories Burned 
+
+ggplot(data = daily_activity_cleanNew)+
+  geom_point(mapping=aes(x=TotalSteps, y=Calories), color="blue") +
+  geom_smooth(mapping=aes(x=TotalSteps, y=Calories,color="red")) +
+  labs(title="The Relationship Between Total Steps and Calories Burned", x="Total Steps", y="Calories Burned (kcal)")
+```
+
+Although it should go without saying, the more steps someone takes, the more calories they burn. Of course, being more active results in taking more steps, which increases calorie expenditure. According to this data set, the typical person only completes 8000 total steps per day, which translates to a daily calorie expenditure of less than 2500.
+It would be hard to determine the precise number of calories an individual needs to burn in order to lose weight at a healthy rate without knowing more about the person's age, sex, and height. However, it is obvious that they are not losing enough weight because there was no change in the BMI or weight of the people who documented such figures.
+
+
+```{r}
+# Total Distance vs Calories Burned
+
+ggplot(data = daily_activity_cleanNew)+
+  geom_point(mapping=aes(x=TotalDistance, y=Calories), color="blue") +
+  geom_smooth(mapping=aes(x=TotalDistance, y=Calories,color="red")) +
+  labs(title="The Relationship Between Total Distance and Calories Burned", x="Total Distance", y="Calories Burned (kcal)")
+```
+
+
+
+
+
+
+```{r}
+# Total Hours Asleep and Total Hours In Bed
+
+ggplot(data = daily_sleep_clean)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=TotalHoursInBed), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=TotalHoursInBed,color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Total Hours In Bed", x="Total Hours Asleep", y="Total Hours In Bed")
+
+```
+
+
+
+
+
+
+
+```{r}
+# Merging two datasets to generated a combined chart
+
+combined_data_1<-merge(daily_activity_cleanNew,weight_data_clean,by="Id")
+```
+
+
+
+
+
+
+
+```{r}
+# Very Active Hours vs BMI
+
+ggplot(data = combined_data_1)+
+  geom_point(mapping=aes(x=VeryActiveHours, y=BMI), color="blue") +
+  geom_smooth(mapping=aes(x=VeryActiveHours, y=BMI,color="red")) +
+  labs(title="The Relationship Between Very Active Hours and BMI", x="Very Active Hours", y="BMI")
+```
+
+
+
+
+```{r}
+# Sedentary Hours vs BMI
+
+ggplot(data = combined_data_1)+
+  geom_point(mapping=aes(x=SedentaryHours, y=BMI), color="blue") +
+  geom_smooth(mapping=aes(x=SedentaryHours, y=BMI,color="red")) +
+  labs(title="The Relationship Between Sedentary Hours and BMI", x="Sedentary Hours", y="BMI")
+```
+
+
+
+
+
+```{r}
+#Lightly Active Hours and BMI
+
+ggplot(data = combined_data_1)+
+  geom_point(mapping=aes(x=LightlyActiveHours, y=BMI), color="blue") +
+  geom_smooth(mapping=aes(x=LightlyActiveHours, y=BMI,color="red")) +
+  labs(title="The Relationship Between Lightly Active Hours and BMI", x="Lightly Active Hours", y="BMI")
+```
+
+
+
+```{r}
+# Merging two data sets to generated a combined chart
+
+combined_data_2<-merge(daily_activity_cleanNew,daily_sleep_clean,by="Id")
+
+```
+
+
+
+
+```{r}
+# Total Hours Asleep vs Total Steps
+
+ggplot(data = combined_data_2)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=TotalSteps), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=TotalSteps,color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Total Steps", x="Total Hours Asleep", y="Total Steps")
+
+```
+
+
+
+
+
+
+```{r}
+# Total Hours Asleep and Very Active Hours
+
+ggplot(data = combined_data_2)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=VeryActiveHours), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=VeryActiveHours,color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Very Active Hours", x="Total Hours Asleep", y="Very Active Hours")
+
+```
+
+
+```{r}
+# Total Hours Asleep and Fairly Active Hours
+
+ggplot(data = combined_data_2)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=FairlyActiveHours), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=FairlyActiveHours,color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Fairly Active Hours", x="Total Hours Asleep", y="Fairly Active Hours")
+```
+
+
+
+```{r}
+# Total Hours Asleep and Lightly Active Hours
+
+ggplot(data = combined_data_2)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=LightlyActiveHours), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=LightlyActiveHours, color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Lightly Active Hours", x="Total Hours Asleep", y="Lightly Active Hours")
+```
+
+
+
+
+
+```{r}
+# Total Hours Asleep and Sedentary Hours
+
+ggplot(data = combined_data_2)+
+  geom_point(mapping=aes(x=TotalHoursAsleep, y=SedentaryHours), color="blue") +
+  geom_smooth(mapping=aes(x=TotalHoursAsleep, y=SedentaryHours, color="red")) +
+  labs(title="The Relationship Between Total Hours Asleep and Sedentary Hours", x="Total Hours Asleep", y="Sedentary Hours")
+
+```
+
+
