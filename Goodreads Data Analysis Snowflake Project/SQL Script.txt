@@ -1,0 +1,474 @@
+SELECT
+  *
+FROM
+  DEMO.PUBLIC.GOODREADS 
+  limit 10;
+
+
+// Data Cleaning steps
+  
+// Checking duplicate entries in the id column
+
+
+SELECT 
+    id,
+    COUNT(*) AS occurrence
+FROM 
+    goodreads
+GROUP BY 
+    id
+HAVING 
+    COUNT(*) > 1;
+
+
+// Checking for duplicate rows
+
+    SELECT 
+    id,name,author,
+    COUNT(*) AS occurrence
+FROM 
+    goodreads
+GROUP BY 
+    id,name,author
+HAVING 
+    COUNT(*) > 1;
+
+// Handling null or empty values
+
+SELECT id
+FROM goodreads
+WHERE id IS NULL OR id = ''; //no entries
+
+
+SELECT name
+FROM goodreads
+WHERE name IS NULL OR name = ''; // no entries
+
+SELECT author
+FROM goodreads
+WHERE author IS NULL OR author = ''; // no entries
+
+SELECT star_rating
+FROM goodreads
+WHERE star_rating IS NULL; // no entries
+
+SELECT num_ratings
+FROM goodreads
+WHERE num_ratings IS NULL;  // no entries
+
+SELECT num_reviews
+FROM goodreads
+WHERE num_reviews IS NULL OR num_reviews = ''; // no entries
+
+SELECT summary
+FROM goodreads
+WHERE summary IS NULL OR summary = ''; // 221 entries
+
+SELECT genres
+FROM goodreads
+WHERE genres IS NULL OR genres = ''; // no entries
+
+SELECT name, author, first_published
+FROM goodreads
+WHERE first_published IS NULL; // 157 entries
+
+SELECT id, about_author
+FROM goodreads
+WHERE about_author IS NULL OR about_author = ''; // no entries
+
+SELECT id, community_reviews
+FROM goodreads
+WHERE community_reviews IS NULL OR community_reviews = ''; // no entries
+
+SELECT id, kindle_price
+FROM goodreads
+WHERE kindle_price IS NULL OR kindle_price = ''; // 7.0k entries
+
+SELECT 
+    REPLACE(REPLACE(REPLACE(kindle_price, '"', ''), '"', ''), '$', '') as "kindle_price_in_dollars"
+FROM 
+    goodreads;
+
+UPDATE goodreads
+SET kindle_price=REPLACE(REPLACE(REPLACE(kindle_price, '"', ''), '"', ''), '$', ''); //27932 rows updated
+
+ALTER TABLE goodreads
+RENAME COLUMN kindle_price TO kindle_price_in_dollars;
+
+
+// Find out median kindle price using CTE
+WITH sorted_prices AS (
+    SELECT 
+        kindle_price_in_dollars,
+        ROW_NUMBER() OVER (ORDER BY kindle_price_in_dollars) AS row_num,
+        COUNT(*) OVER () AS total_count
+    FROM 
+        goodreads
+    WHERE 
+        kindle_price_in_dollars IS NOT NULL
+)
+SELECT 
+    AVG(kindle_price_in_dollars) AS median_price
+FROM 
+    sorted_prices
+WHERE 
+    row_num IN ((total_count + 1) / 2, (total_count + 2) / 2);
+
+
+// Update null values with median using subqueries
+
+UPDATE goodreads
+SET kindle_price_in_dollars = (
+    SELECT median_price
+    FROM (
+        SELECT 
+            AVG(kindle_price_in_dollars) AS median_price
+        FROM 
+            (
+                SELECT 
+                    kindle_price_in_dollars,
+                    ROW_NUMBER() OVER (ORDER BY kindle_price_in_dollars) AS row_num,
+                    COUNT(*) OVER () AS total_count
+                FROM 
+                    goodreads
+                WHERE 
+                    kindle_price_in_dollars IS NOT NULL
+            ) AS sorted_prices
+        WHERE 
+            row_num IN ((total_count + 1) / 2, (total_count + 2) / 2)
+    ) AS median_cte
+)
+WHERE 
+    kindle_price_in_dollars IS NULL;
+
+// 7005 rows updated
+
+UPDATE goodreads
+SET num_reviews = NULL
+WHERE num_reviews = ''; 
+
+
+// Removing " " and [] from the column: author
+
+UPDATE goodreads
+SET author= REPLACE(REPLACE(REPLACE(REPLACE(author,'[',''),']',''),'"',''),'"',''); //27932 rows updated
+
+// Dropping unnecessary column: URL
+
+ALTER TABLE goodreads
+DROP COLUMN url;
+
+// Converting the datatype of first_published column to date datatype
+
+ALTER TABLE goodreads ADD COLUMN first_published_date DATE;
+
+SELECT id, first_published
+FROM goodreads
+WHERE TRY_TO_DATE(first_published, 'MM/DD/YYYY') IS NULL;
+
+UPDATE goodreads
+SET first_published = NULL
+WHERE TRY_TO_DATE(first_published, 'MM/DD/YYYY') IS NULL;
+
+UPDATE goodreads
+SET first_published_date = TO_DATE(first_published, 'MM/DD/YYYY')
+WHERE first_published IS NOT NULL;
+
+SELECT id, first_published, first_published_date FROM goodreads;
+
+ALTER TABLE goodreads DROP COLUMN first_published;
+
+ALTER TABLE goodreads RENAME COLUMN first_published_date TO first_published;
+
+// Deleting the rows with incorrect dates (future dates)
+
+SELECT id, name, author,first_published 
+FROM goodreads
+WHERE first_published>current_date; // 6 rows
+
+DELETE FROM goodreads
+WHERE first_published>current_date; // 6 rows deleted
+
+UPDATE goodreads
+SET num_reviews=0
+WHERE num_reviews IS NULL;
+
+
+// ANALYSIS 
+
+// Price Analysis
+
+SELECT ROUND(AVG(kindle_price_in_dollars),2) as "Average Kindle Price in Dollars", star_rating as "Rating (Star)"
+FROM goodreads
+GROUP BY star_rating
+ORDER BY 2 DESC;
+
+// Price vs. Rating: if there's a correlation between higher-priced books and higher ratings. 
+
+SELECT 
+    AVG(star_rating) AS avg_rating,
+    CASE 
+        WHEN kindle_price_in_dollars < 10 THEN '0-9.99'
+        WHEN kindle_price_in_dollars < 20 THEN '10-19.99'
+        WHEN kindle_price_in_dollars < 30 THEN '20-29.99'
+        ELSE '30+' 
+    END AS price_range
+FROM 
+    goodreads
+GROUP BY 
+    CASE 
+        WHEN kindle_price_in_dollars < 10 THEN '0-9.99'
+        WHEN kindle_price_in_dollars < 20 THEN '10-19.99'
+        WHEN kindle_price_in_dollars < 30 THEN '20-29.99'
+        ELSE '30+' 
+    END
+ORDER BY 
+    price_range;
+
+// Price Distribution across different authors
+
+SELECT 
+    author,
+    AVG(kindle_price_in_dollars) AS avg_price
+FROM 
+    goodreads
+GROUP BY 
+    author
+ORDER BY 2 DESC;
+
+// Price Trends:To track how kindle_price has changed over time and identify any seasonal trends
+
+-- Average price by publication month
+SELECT 
+    EXTRACT(MONTH FROM first_published) AS publication_month,
+    AVG(kindle_price_in_dollars) AS avg_price
+FROM 
+    goodreads
+GROUP BY 
+    publication_month
+ORDER BY 
+    publication_month;
+
+-- Average price by publication year
+SELECT 
+    EXTRACT(YEAR FROM first_published) AS publication_year,
+    AVG(kindle_price_in_dollars) AS avg_price
+FROM 
+    goodreads
+GROUP BY 
+    publication_year
+ORDER BY 
+    publication_year;
+
+
+// List the top 10 highest-rated self-help books. 
+
+SELECT author AS "Author Name", name AS "Book Title", star_rating AS "Stars"
+FROM demo.public.goodreads
+ORDER BY star_rating DESC
+LIMIT 10;
+
+WITH ranked_books AS (
+    SELECT 
+        author AS "Author Name", 
+        name AS "Book Title", 
+        star_rating AS "Stars",
+        DENSE_RANK() OVER (ORDER BY star_rating DESC) AS "Rank"
+    FROM 
+        demo.public.goodreads
+)
+SELECT *
+FROM ranked_books
+WHERE "Rank" <= 10
+ORDER BY "Rank", "Stars" DESC;
+
+
+
+// Identify the most popular authors based on the average star rating and the total number of ratings.
+
+SELECT 
+   author as "Author Name",
+    ROUND(AVG(star_rating),2) AS "Average Rating (Stars)",
+    SUM(num_ratings) AS "Total Number of Ratings"
+FROM 
+    demo.public.goodreads
+GROUP BY 
+    1
+HAVING 
+    SUM(num_ratings) > 0
+ORDER BY 
+    2 DESC, 3 DESC;
+
+
+
+// Track the number of self-help books published each year.
+
+SELECT count(id),year(first_published) AS "Year"
+FROM goodreads
+GROUP BY year(first_published)
+ORDER BY 1 DESC;
+
+// Determine the most prolific authors (based on the number of books published).
+SELECT count(id), author
+FROM goodreads
+GROUP BY author
+ORDER BY count(id) DESC;
+
+
+ // Analyze the average ratings of books by different authors to identify those with consistently high or low ratings.
+
+ SELECT avg(star_rating) AS "Average Ratings", author
+ FROM goodreads
+ GROUP BY author
+ ORDER BY avg(star_rating) ASC;
+
+ 
+ SELECT 
+    MIN(avg_rating) AS min_avg_rating,
+    MAX(avg_rating) AS max_avg_rating
+FROM (
+    SELECT 
+        AVG(star_rating) AS avg_rating
+    FROM 
+        goodreads
+    GROUP BY 
+        author
+) AS subquery;
+
+-- OR
+
+WITH avg_ratings AS (
+    SELECT 
+        AVG(star_rating) AS r, 
+        author
+    FROM 
+        goodreads
+    GROUP BY 
+        author
+)
+SELECT 
+    MIN(r) AS min_avg_rating,
+    MAX(r) AS max_avg_rating
+FROM 
+    avg_ratings;
+
+// Examine if books by certain authors have higher community engagement 
+
+SELECT author, SUM(num_reviews)
+FROM goodreads
+GROUP BY author
+ORDER BY 2 DESC;
+
+SELECT 
+    author,
+    ROUND(AVG(num_reviews),0) AS avg_reviews_per_book
+FROM 
+    goodreads
+GROUP BY 
+    author
+ORDER BY 
+    avg_reviews_per_book DESC;
+
+--Distribution of Number of Reviews and Ratings:
+-- Summary statistics for num_reviews
+
+SELECT 
+    MIN(num_reviews) AS min_reviews,
+    MAX(num_reviews) AS max_reviews,
+    AVG(num_reviews) AS avg_reviews,
+    MEDIAN(num_reviews) AS median_reviews,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY num_reviews) AS q1_reviews,
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY num_reviews) AS q3_reviews
+FROM 
+    goodreads;
+
+
+-- Summary statistics for num_ratings
+SELECT 
+    MIN(num_ratings) AS min_ratings,
+    MAX(num_ratings) AS max_ratings,
+    AVG(num_ratings) AS avg_ratings,
+    MEDIAN(num_ratings) AS median_ratings,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY num_ratings) AS q1_ratings,
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY num_ratings) AS q3_ratings
+FROM 
+    goodreads;
+
+
+-- Correlation between num_reviews and star_rating
+SELECT 
+    CORR(num_reviews, star_rating) AS correlation_reviews_rating
+FROM 
+    goodreads;
+
+
+-- Correlation between num_ratings and star_rating
+SELECT 
+    CORR(num_ratings, star_rating) AS correlation_ratings_rating
+FROM 
+    goodreads;
+    
+//Analyze the first_published_date to understand the publication patterns (e.g., most common months for book releases).
+
+
+SELECT 
+    TO_CHAR(first_published, 'Mon') AS publication_month,
+    COUNT(*) AS books_published
+FROM 
+    goodreads
+GROUP BY 
+    TO_CHAR(first_published, 'Mon')
+ORDER BY 
+    books_published DESC;
+
+-- OR
+
+SELECT 
+    EXTRACT(MONTH FROM first_published) AS publication_month,
+    COUNT(*) AS books_published
+FROM 
+    goodreads
+GROUP BY 
+    publication_month
+ORDER BY 
+    books_published DESC;
+
+
+// Author with the highest number of books published
+
+SELECT COUNT(id), author
+FROM goodreads
+GROUP BY 2
+ORDER BY 1 DESC
+LIMIT 5;
+
+-- With Rankings
+
+WITH author_book_counts AS (
+    SELECT 
+        author,
+        COUNT(*) AS book_count
+    FROM 
+        goodreads
+    GROUP BY 
+        author
+),
+ranked_authors AS (
+    SELECT
+        author,
+        book_count,
+        DENSE_RANK() OVER (ORDER BY book_count DESC) AS author_rank
+    FROM
+        author_book_counts
+)
+SELECT 
+    author,
+    book_count,
+    author_rank
+FROM 
+    ranked_authors
+WHERE 
+    author_rank <= 5
+ORDER BY 
+    author_rank;
+
