@@ -1,0 +1,23 @@
+Project Overview
+This project focuses on generating a comprehensive Key Performance Indicator (KPI) report derived from a subset of patient records spanning from 2011 to 2022. The report addresses critical questions pertinent to patient admissions, healthcare costs, and insurance coverage. Below are the key findings and insights that are crucial for management's strategic considerations.
+Key Questions and Findings:
+1. How many patients have been admitted or readmitted over time?
+Between 2011 and 2022, a total of 974 unique patients were admitted, with 854 of them experiencing readmissions, resulting in a significant readmission rate of 87.7%. Overall, there were approximately 28,000 admissions during this period. Notably, from 2019 to 2021, there was a marked increase in admission rates, likely influenced by the COVID-19 pandemic and its residual impact on individuals' health, potentially due to compromised immune systems or delayed medical care.
+2. How long are patients staying in the hospital, on average?
+The average length of stay across all encounters is approximately 7.28 hours. However, a closer examination reveals that the majority of these encounters are brief, indicating a high volume of short-duration visits which may be driven by ambulatory or urgent care services.
+3. How much is the average cost per visit?
+The average cost per visit throughout the entire period from 2011 to 2022 is approximately $3,600. Interestingly, this cost has shown a declining trend in recent years, with the average cost per visit being around $2,600 in 2021 and about $3,100 in 2022. This decrease could be attributed to changes in healthcare policies, insurance negotiations, or shifts in patient demographics and healthcare needs.
+4. How many procedures are covered by insurance?
+Approximately 52% of medical procedures (totaling 25,000) are covered by insurance. This indicates that nearly half of the patients might be facing significant out-of-pocket expenses. Management should consider collaborating with insurance providers to extend coverage and alleviate the financial burden on uninsured patients.
+Additional Insights:
+1. Age Distribution in Patient Admissions:
+The highest number of admissions occurred in the 85+ age category, with 324 patients.
+The lowest number of admissions was observed in the 25-34 age group, with only 100 patients. This might reflect demographic trends or health conditions prevalent in different age groups.
+2. Gender Distribution in Patient Admissions:
+The gender distribution among patients is almost equal, suggesting no significant gender disparity in accessing healthcare services within the observed population.
+3. Most Expensive Procedures:
+Electrical Cardioversion has emerged as the procedure with the highest expenditure over the years. This may indicate the prevalence of cardiac-related health issues or the high cost associated with this treatment.
+4. Trends in Female Patient Admissions:
+Since 2015, there has been a consistent increase in the number of female patients admitted. This trend could be due to heightened awareness of women's health, better access to healthcare services for women, or demographic changes.
+5. Prevalence of Ambulatory Encounters:
+Ambulatory encounters constitute the highest number of patient visits. This prevalence suggests a strong reliance on outpatient care services, possibly driven by a focus on preventive care, chronic disease management, or the convenience of receiving medical attention without hospital admission.
