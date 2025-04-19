@@ -1,0 +1,9 @@
+ Yelp Business Reviews Analysis
+
+This project showcases a complete data analytics pipeline built using Python, AWS S3, Snowflake, and SQL. We began by handling a large JSON dataset, which was too heavy for direct ingestion. To optimize the process, we used Python to split the large JSON file into smaller, manageable chunks, significantly improving data upload efficiency.
+
+Next, the processed files were uploaded to an AWS S3 bucket, serving as the staging area for our data pipeline. From there, we loaded the data into Snowflake, a powerful cloud-based data warehouse, leveraging its scalability and performance.
+
+Finally, using SQL within Snowflake, we explored and answered insightful business questions, showcasing the ability to extract meaningful patterns and trends from the raw data. This project highlights practical skills in data wrangling, cloud storage integration, and data analysis using modern tools.
+
+Link to download the dataset: https://business.yelp.com/data/resources/open-dataset/
